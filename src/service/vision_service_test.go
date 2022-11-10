@@ -42,8 +42,9 @@ func Test_GetAllShouldReturnAllVision(t *testing.T) {
 func Test_GetByIdShouldReturnVision(t *testing.T) {
 	service, m := initTest(t)
 
-	m.EXPECT().GetById(2).Times(1).Return(model.Vision{ID: 2, Title: "foo", Body: "bar", Active: true}, nil)
+	m.EXPECT().GetById(uint64(2)).Times(1).Return(model.Vision{ID: 2, Title: "foo", Body: "bar", Active: true}, nil)
 	c, _ := gin.CreateTestContext(httptest.NewRecorder())
+	c.Params = gin.Params{gin.Param{Key: "id", Value: "2"}}
 
 	service.GetById(c)
 	assert.Equal(t, 200, c.Writer.Status())
@@ -69,23 +70,15 @@ func Test_CreateShouldReturnAnErrorIfNoVisionIsProvided(t *testing.T) {
 	assert.Equal(t, 500, c.Writer.Status())
 }
 
-func Test_CreateShouldCreateNewVision(t *testing.T) {
-}
-
 func Test_DeleteShouldDeleteVision(t *testing.T) {
-}
-
-func Test_DeleteShouldReturnAnErrorIfNoVisionIsProvided(t *testing.T) {
 	service, m := initTest(t)
 
-	m.EXPECT().Delete(2).Times(1).Return(model.Vision{ID: 2, Title: "foo", Body: "bar", Active: true}, nil)
+	m.EXPECT().Delete(uint64(2)).Times(1).Return(nil)
 	c, _ := gin.CreateTestContext(httptest.NewRecorder())
+	c.Params = gin.Params{gin.Param{Key: "id", Value: "2"}}
 
 	service.Delete(c)
-	assert.Equal(t, 500, c.Writer.Status())
-}
-
-func Test_UpdateShouldUpdateVision(t *testing.T) {
+	assert.Equal(t, 200, c.Writer.Status())
 }
 
 func Test_UpdateShouldReturnAnErrorIfNoVisionIsProvided(t *testing.T) {

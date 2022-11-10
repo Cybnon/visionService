@@ -1,6 +1,7 @@
 package service
 
 import (
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"strconv"
 	"visionServiceGo/src/model"
@@ -15,6 +16,7 @@ type Service struct {
 func NewService(orm orm.VisionORMModel) *Service {
 	router := gin.Default()
 	service := &Service{orm: orm, router: router}
+	service.CORSMiddleware()
 	service.SetRoutes()
 	return service
 }
@@ -31,6 +33,10 @@ func (s *Service) SetRoutes() {
 	s.router.PUT("/vision/:id/activate", s.Activate)
 	s.router.PUT("/vision/:id", s.Update)
 	s.router.DELETE("/vision/:id", s.Delete)
+}
+
+func (s *Service) CORSMiddleware() {
+	s.router.Use(cors.Default())
 }
 
 func (s *Service) GetAll(c *gin.Context) {
